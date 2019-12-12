@@ -1,0 +1,70 @@
+@startuml 초기설계
+'-----------------------------------------------------------
+' 설정
+'-----------------------------------------------------------
+'=== Header and Footer ===
+header tourdesignproj1
+
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+	Copyright ⒞ manezcorp All rights reserved.
+end footer
+
+'=== 제목 ===
+title
+	<size:25>tourdesignproj1</size>
+end title
+
+'=== 옵션 ===
+' 자동채번: ex) "<b>000." => 앞에 0을 채워 3자리 숫자로 표시
+autonumber "<b>(#)"
+' 페이지 하단 participant box 숨기기
+'hide footbox
+
+'=== Panticipants ===
+participant 사용자 as user <<app>>
+
+box "개발서버"
+participant 뷰 as view <<front>>
+participant 서버 as server <<back>>
+end box
+
+'-----------------------------------------------------------
+' 상수
+'-----------------------------------------------------------
+' !$REST = "rest api"
+' !$ID = "id"
+' !$Request = "request"
+' !$Response = "response"
+
+'-----------------------------------------------------------
+' 내용
+'-----------------------------------------------------------
+
+'-----------------------------------------------------------
+' Parameter 용어 정리 
+'-----------------------------------------------------------
+' note right of user #Bviewque
+' Parameter Desc
+' * $ID               = 사용자명
+' * $Request          = 요청
+' * $Response         = 응답
+' end note
+
+user -> view: 데이터(json) 서버로 전달 \n param: 수집된 데이터(?)
+    activate view
+    view --> server: 조합된 데이터(json) 서버로 최적경로 요청
+    server -> server: 사용자에게 제안할 경로를 위한 데이터 처리
+    server --> view: 데이터 리턴
+    view -> view: 서버로 부터 전달받은 데이터를 화면에 출력
+        note right of view #Bviewque
+            1. 사용자에게 제안한 정보가 여러개일 경우 선택가능하도록 화면 제공
+        end note    
+    view -> server: 사용자가 선택한 경로 서버로 전송
+    server -> server: 전달받은 데이터 확장 데이터로 DB저장
+    server -> view: 확정된 경로 및 추천 경로 리턴
+    view -> view: 사용자에게 화면으로 출력
+    
+return 처리완료
+
+@enduml
