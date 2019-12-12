@@ -1,0 +1,12 @@
+@startuml
+start
+	:여행유형을 선택하세요;
+
+	if(여행유형을?) then (솔로)
+		: 혼자만의 여행을?;
+	else (여럿)
+		: 여럿이 갈꺼에요.;
+	endif
+
+end
+@enduml
