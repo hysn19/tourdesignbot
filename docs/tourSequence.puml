@@ -1,0 +1,87 @@
+@startuml 초기설계
+'-----------------------------------------------------------
+' 설정
+'-----------------------------------------------------------
+'=== Header and Footer ===
+header tourdesignproj1
+
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+	Copyright ⒞ manezcorp All rights reserved.
+end footer
+
+'=== 제목 ===
+title
+	<size:20>tourdesignproj1</size>
+end title
+
+'=== 옵션 ===
+' 자동채번: ex) "<b>000." => 앞에 0을 채워 3자리 숫자로 표시
+autonumber "<b>(#)"
+' 페이지 하단 participant box 숨기기
+'hide footbox
+
+'=== Panticipants ===
+participant 사용자 as user <<app>>
+
+box "개발서버"
+participant 뷰 as view <<front>>
+participant 서버 as server <<back>>
+end box
+
+'-----------------------------------------------------------
+' 상수
+'-----------------------------------------------------------
+' !$rest = "rest api"
+' !$id = "id"
+' !$request = "request"
+' !$response = "response"
+
+'-----------------------------------------------------------
+' 내용
+'-----------------------------------------------------------
+
+'-----------------------------------------------------------
+' Parameter 용어 정리 
+'-----------------------------------------------------------
+' note right of user #Bviewque
+' Parameter Desc
+' * $id               = 사용자 고유값
+' * $Request          = 요청
+' * $Response         = 응답
+' end note
+
+user --> view: 최초접속 요청
+activate view
+    view -> view: 가입여부 확인
+    view -> view: 초기화면 출력
+        note right of view #Bviewque
+            1. 성별 및 원하는 여행지
+            2. 여행의 목적 및 인원(경비)
+            3. 그외에 입력받을 세부항목
+            - STEP은 3단계 정도로 간단하게 입력
+        end note    
+    view --> server: 1차 데이터 서버로 전송
+    server -> server: 요청받은 데이터는 분석데이터로 저장
+    server -> server: 수집된 정보를 기반으로 사용자 분석
+    server -> server: 추천여행 경로를 3가지 유형으로 정제
+    server --> view: 결과 데이터 리턴
+    view -> view: 추천경로 및 장소 데이터를 화면에 출력
+    view -> view: 추천경로에 따른 경비 및 이동소요 시간 표시
+        note right of view #Bviewque
+            1. 제안한 경로를 선택가능하도록 화면 제공
+            2. 제안한 경로 중 사용자 선택으로 조합 가능
+            3. 뷰에서 사용자가 조합한 데이터는 서버로 전송
+            - 서버로 전송된 데이터는 누적데이터로 저장
+        end note    
+    view --> server: 결정된 경로 서버로 전송
+    server -> server: 전달받은 데이터 확장데이터로 DB저장
+    server --> view: 결과 데이터 리턴
+    view --> server: 가고싶은 곳 추가 및 수동입력 기능 제공
+    server --> view: 결과 데이터 리턴
+    view -> view: 사용자에게 화면으로 출력
+    view -> view: 경로 저장 및 공유하기 기능 제공
+    
+return 처리완료
+
+@enduml
